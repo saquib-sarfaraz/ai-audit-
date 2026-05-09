@@ -18,25 +18,24 @@ export function SummaryCards({ results }: { results: AuditResults }) {
 
   return (
     <section id="overview" className="scroll-mt-24">
-      <div className="grid gap-4 lg:grid-cols-4">
-        <Card className="p-6 shadow-subtle lg:col-span-2">
+      <div className="grid gap-4">
+        <Card className="relative overflow-hidden p-6 shadow-subtle border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="text-sm font-semibold">Estimated savings</div>
-              <div className="mt-2 text-3xl font-semibold tracking-tight">
+              <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Estimated savings</div>
+              <div className="mt-2 text-4xl font-bold tracking-tight text-foreground">
                 {formatUsd(results.totalMonthlySavingsUsd)}
-                <span className="ml-1 text-base font-normal text-muted-foreground">
-                  /mo
+                <span className="ml-1 text-lg font-normal text-muted-foreground">
+                  /mo savings
                 </span>
               </div>
-              <div className="mt-2 text-sm text-muted-foreground">
-                {formatUsd(results.totalAnnualSavingsUsd)} per year •{' '}
-                {Math.round(savingsPct * 100)}% reduction
+              <div className="mt-2 text-sm text-emerald-600/80 dark:text-emerald-400/80 font-medium">
+                {results.totalMonthlySavingsUsd === 0 ? "Already optimized" : "Available to capture"}
               </div>
             </div>
             <Badge
               variant={status === 'high' ? 'default' : status === 'moderate' ? 'secondary' : 'muted'}
-              className="h-6"
+              className="h-6 shadow-sm"
             >
               {status === 'high'
                 ? 'High opportunity'
@@ -46,43 +45,25 @@ export function SummaryCards({ results }: { results: AuditResults }) {
             </Badge>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border bg-muted/30 p-4">
-              <div className="text-xs text-muted-foreground">Current spend</div>
-              <div className="mt-1 text-lg font-semibold">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border bg-background/50 p-4 shadow-sm backdrop-blur-sm">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Current spend</div>
+              <div className="mt-2 text-xl font-semibold text-foreground">
                 {formatUsd(results.totalCurrentMonthlyUsd)}
-                <span className="ml-1 text-xs font-normal text-muted-foreground">
+                <span className="ml-1 text-sm font-normal text-muted-foreground">
                   /mo
                 </span>
               </div>
             </div>
-            <div className="rounded-2xl border bg-muted/30 p-4">
-              <div className="text-xs text-muted-foreground">Recommended</div>
-              <div className="mt-1 text-lg font-semibold">
+            <div className="rounded-xl border bg-background/50 p-4 shadow-sm backdrop-blur-sm border-emerald-500/20">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Recommended</div>
+              <div className="mt-2 text-xl font-semibold text-emerald-600 dark:text-emerald-400">
                 {formatUsd(results.totalRecommendedMonthlyUsd)}
-                <span className="ml-1 text-xs font-normal text-muted-foreground">
+                <span className="ml-1 text-sm font-normal opacity-80">
                   /mo
                 </span>
               </div>
             </div>
-          </div>
-        </Card>
-
-        <Card className="p-6 shadow-subtle">
-          <div className="text-xs text-muted-foreground">Top drivers</div>
-          <div className="mt-2 text-sm font-semibold">Downgrade & right-size</div>
-          <div className="mt-2 text-sm text-muted-foreground">
-            Suggested savings from seat counts and plan tiers.
-          </div>
-        </Card>
-
-        <Card className="p-6 shadow-subtle">
-          <div className="text-xs text-muted-foreground">Recommendations</div>
-          <div className="mt-2 text-3xl font-semibold tracking-tight">
-            {results.recommendations.length}
-          </div>
-          <div className="mt-2 text-sm text-muted-foreground">
-            Prioritized next steps to execute.
           </div>
         </Card>
       </div>

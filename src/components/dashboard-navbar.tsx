@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useThemeStore } from '@/lib/stores/theme-store'
 import type { ThemeMode } from '@/types/theme'
 
@@ -38,9 +38,9 @@ export function DashboardNavbar() {
                   AI
                 </div>
                 <div>
-                  <div className="text-sm font-semibold tracking-tight">
+                  <SheetTitle className="text-sm font-semibold tracking-tight">
                     Spend Audit
-                  </div>
+                  </SheetTitle>
                   <div className="text-xs text-muted-foreground">
                     Dashboard navigation
                   </div>

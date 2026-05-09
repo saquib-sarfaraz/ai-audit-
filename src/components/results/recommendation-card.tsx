@@ -28,43 +28,43 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
   const Icon = meta.icon
 
   return (
-    <Card className="group overflow-hidden p-5 shadow-subtle transition-transform hover:-translate-y-0.5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
+    <Card className="group overflow-hidden p-6 shadow-sm border-primary/5 hover:border-primary/20 transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-background to-muted/20">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-3">
             <div
               className={cn(
-                'grid h-9 w-9 place-items-center rounded-2xl bg-muted/50',
+                'grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-background shadow-sm border border-border/50',
                 meta.className
               )}
             >
               <Icon className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold">{rec.title}</div>
-              <div className="mt-1 flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="text-[11px]">
+              <div className="truncate text-base font-semibold tracking-tight">{rec.title}</div>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <Badge variant="outline" className="text-[10px] font-medium tracking-wide uppercase bg-background">
                   {meta.label}
                 </Badge>
-                <Badge variant={impactVariant[rec.impact]} className="text-[11px]">
-                  {rec.impact.toUpperCase()} impact
+                <Badge variant={impactVariant[rec.impact]} className="text-[10px] font-medium tracking-wide uppercase">
+                  {rec.impact} impact
                 </Badge>
                 {rec.toolId ? (
-                  <Badge variant="muted" className="text-[11px]">
-                    {rec.toolId}
+                  <Badge variant="muted" className="text-[10px] font-medium tracking-wide uppercase bg-background">
+                    {rec.toolId.replace(/_/g, ' ')}
                   </Badge>
                 ) : null}
               </div>
             </div>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">{rec.description}</p>
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{rec.description}</p>
         </div>
 
-        <div className="shrink-0 text-right">
-          <div className="text-xs text-muted-foreground">Est. savings</div>
-          <div className="mt-1 text-lg font-semibold tracking-tight">
+        <div className="shrink-0 text-right ml-4">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Est. savings</div>
+          <div className="mt-1 text-2xl font-bold tracking-tight text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
             {formatUsd(rec.estimatedMonthlySavingsUsd)}
-            <span className="ml-1 text-xs font-normal text-muted-foreground">/mo</span>
+            <span className="ml-1 text-sm font-normal opacity-80">/mo</span>
           </div>
         </div>
       </div>

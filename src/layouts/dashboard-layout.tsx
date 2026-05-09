@@ -10,7 +10,7 @@ export function DashboardLayout() {
     <div className="min-h-dvh bg-background text-foreground">
       <DashboardNavbar />
       <div className="container flex gap-6 py-6">
-        <aside className="hidden w-64 shrink-0 lg:block">
+        <aside className="hidden w-64 shrink-0 lg:block sticky top-24 h-[calc(100vh-7rem)] overflow-y-auto">
           <Sidebar />
         </aside>
         <main className="min-w-0 flex-1">

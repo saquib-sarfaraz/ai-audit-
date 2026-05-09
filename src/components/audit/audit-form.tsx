@@ -85,10 +85,42 @@ export function AuditForm() {
 
   const removeTool = (index: number) => toolsArray.remove(index)
 
-  const onSubmit = (data: AuditFormInput) => {
-    const results = runMockAudit(data)
-    setResults(results)
-    navigate('/results')
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+
+  const onSubmit = async (data: AuditFormInput) => {
+    try {
+      setIsSubmitting(true)
+      const mappedTools = data.tools.map((t) => {
+        const tool = toolById.get(t.toolId as any)
+        const plan = tool?.plans.find((p) => p.id === t.planId)
+        return {
+          name: tool?.name || t.toolId,
+          plan: plan?.name || t.planId,
+          monthlySpend: Number(t.monthlySpendUsd) || 0,
+          seats: Number(t.seats) || 1,
+        }
+      })
+
+      const payload = {
+        teamSize: Number(data.teamSize),
+        primaryUseCase: data.primaryUseCase,
+        tools: mappedTools,
+      }
+
+      const { generateAuditReport } = await import('@/lib/api')
+      const response = await generateAuditReport(payload)
+      
+      if (response.success && response.data.reportId) {
+        navigate(`/report/${response.data.reportId}`)
+      } else {
+        throw new Error('Invalid response from server')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Failed to generate audit report.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -183,15 +215,15 @@ export function AuditForm() {
                     : 'Seats-based estimate'
 
                 return (
-                  <Card key={f.keyId} className="p-4 shadow-subtle">
-                    <div className="grid gap-4 md:grid-cols-12 md:items-end">
+                  <Card key={f.keyId} className="p-5 shadow-sm border-primary/5 bg-background hover:border-primary/20 transition-colors group">
+                    <div className="grid gap-5 md:grid-cols-12 md:items-end">
                       <div className="md:col-span-4">
                         <Controller
                           name={`tools.${index}.toolId`}
                           control={form.control}
                           render={({ field, fieldState }) => (
                             <Field>
-                              <FieldLabel>Tool</FieldLabel>
+                              <FieldLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tool</FieldLabel>
                               <Select
                                 value={field.value}
                                 onValueChange={(next) => {
@@ -206,7 +238,7 @@ export function AuditForm() {
                                   }
                                 }}
                               >
-                                <SelectTrigger aria-invalid={fieldState.invalid}>
+                                <SelectTrigger aria-invalid={fieldState.invalid} className="bg-background/50">
                                   <SelectValue placeholder="Select a tool" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -229,12 +261,12 @@ export function AuditForm() {
                           control={form.control}
                           render={({ field, fieldState }) => (
                             <Field>
-                              <FieldLabel>Plan</FieldLabel>
+                              <FieldLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Plan</FieldLabel>
                               <Select
                                 value={field.value}
                                 onValueChange={field.onChange}
                               >
-                                <SelectTrigger aria-invalid={fieldState.invalid}>
+                                <SelectTrigger aria-invalid={fieldState.invalid} className="bg-background/50">
                                   <SelectValue placeholder="Select a plan" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -258,13 +290,14 @@ export function AuditForm() {
                           control={form.control}
                           render={({ field, fieldState }) => (
                             <Field>
-                              <FieldLabel>Seats</FieldLabel>
+                              <FieldLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Seats</FieldLabel>
                               <Input
                                 type="number"
                                 inputMode="numeric"
                                 min={1}
                                 step={1}
                                 aria-invalid={fieldState.invalid}
+                                className="bg-background/50"
                                 {...field}
                               />
                               <FieldError errors={[fieldState.error]} />
@@ -279,13 +312,14 @@ export function AuditForm() {
                           control={form.control}
                           render={({ field, fieldState }) => (
                             <Field>
-                              <FieldLabel>Monthly spend</FieldLabel>
+                              <FieldLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Spend ($)</FieldLabel>
                               <Input
                                 type="number"
                                 inputMode="decimal"
                                 min={0}
                                 step={0.01}
                                 aria-invalid={fieldState.invalid}
+                                className="bg-background/50"
                                 {...field}
                               />
                               <FieldError errors={[fieldState.error]} />
@@ -294,7 +328,7 @@ export function AuditForm() {
                         />
                       </div>
 
-                      <div className="md:col-span-12 flex items-center justify-between gap-3">
+                      <div className="md:col-span-12 flex items-center justify-between gap-3 pt-2 mt-2 border-t border-primary/5 border-dashed">
                         <div className="text-xs text-muted-foreground">
                           {tool ? (
                             <>
@@ -311,12 +345,13 @@ export function AuditForm() {
                         <Button
                           type="button"
                           variant="ghost"
-                          className="text-destructive hover:text-destructive"
+                          size="sm"
+                          className="h-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                           onClick={() => removeTool(index)}
                           disabled={toolsArray.fields.length <= 1}
                         >
-                          <Trash2 />
-                          <span className="sr-only">Remove</span>
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          <span className="text-xs">Remove</span>
                         </Button>
                       </div>
                     </div>
@@ -364,43 +399,67 @@ export function AuditForm() {
             >
               Reset to example
             </Button>
-            <Button type="submit" size="lg">
-              View results
+            <Button type="submit" size="lg" disabled={isSubmitting}>
+              {isSubmitting ? 'Generating...' : 'View results'}
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid gap-4">
-        <Card className="shadow-subtle">
+      <div className="grid gap-4 self-start sticky top-24">
+        <Card className="shadow-soft border-primary/10 bg-gradient-to-br from-background to-muted/20">
           <CardHeader>
-            <CardTitle className="text-base">Current snapshot</CardTitle>
+            <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground font-medium">Current snapshot</CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="rounded-2xl border bg-muted/30 p-4">
-              <div className="text-xs text-muted-foreground">Total monthly spend</div>
-              <div className="mt-1 text-2xl font-semibold tracking-tight">
+          <CardContent className="grid gap-6">
+            <div className="rounded-xl border border-primary/10 bg-background/50 p-5 shadow-sm backdrop-blur-sm">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total estimated spend</div>
+              <div className="mt-2 text-3xl font-bold tracking-tight text-foreground">
                 {formatUsd(totalMonthly)}
               </div>
             </div>
-            <div className="grid gap-2 text-sm text-muted-foreground">
-              <div>• Inline validation with Zod</div>
-              <div>• Auto-saved to localStorage</div>
-              <div>• Results dashboard with charts</div>
-              <div>• Shareable report route</div>
+            <div className="grid gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+                <span>Inline validation with Zod</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+                <span>Auto-saved to localStorage</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+                <span>Results dashboard with charts</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+                <span>Shareable report route</span>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-subtle">
+        <Card className="shadow-subtle bg-gradient-to-br from-indigo-500/5 to-violet-500/5 border-indigo-500/10">
           <CardHeader>
-            <CardTitle className="text-base">What you’ll get</CardTitle>
+            <CardTitle className="text-sm uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-medium">What you’ll get</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-3 text-sm text-muted-foreground">
-            <div>• Overspending signals and duplicate coverage</div>
-            <div>• Plan downgrade opportunities</div>
-            <div>• Alternative tools and consolidation ideas</div>
-            <div>• Estimated monthly and annual savings</div>
+            <div className="flex items-start gap-2">
+              <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500/50" />
+              <span>Overspending signals and duplicate coverage</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500/50" />
+              <span>Plan downgrade opportunities</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500/50" />
+              <span>Alternative tools and consolidation ideas</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500/50" />
+              <span>Estimated monthly and annual savings</span>
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useThemeStore } from '@/lib/stores/theme-store'
 import type { ThemeMode } from '@/types/theme'
 import { cn } from '@/lib/utils'
@@ -42,9 +42,9 @@ export function Navbar() {
                   AI
                 </div>
                 <div>
-                  <div className="text-sm font-semibold tracking-tight">
+                  <SheetTitle className="text-sm font-semibold tracking-tight">
                     Spend Audit
-                  </div>
+                  </SheetTitle>
                   <div className="text-xs text-muted-foreground">
                     Navigation
                   </div>
@@ -111,9 +111,9 @@ export function Navbar() {
           >
             Dashboard
           </NavLink>
-          <a className={navLinkBase} href="#faq">
+          <Link className={navLinkBase} to="/#faq">
             FAQ
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">

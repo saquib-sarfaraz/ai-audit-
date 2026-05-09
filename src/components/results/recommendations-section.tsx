@@ -7,9 +7,9 @@ export function RecommendationsSection({ results }: { results: AuditResults }) {
     <section id="recommendations" className="mt-6 scroll-mt-24">
       <div className="mb-4 flex items-end justify-between gap-3">
         <div>
-          <div className="text-sm font-semibold">Recommendations</div>
-          <div className="text-sm text-muted-foreground">
-            Prioritized next actions based on your inputs.
+          <div className="text-lg font-bold tracking-tight">Recommendations</div>
+          <div className="text-sm text-muted-foreground mt-1">
+            Recommended actions
           </div>
         </div>
       </div>

@@ -60,13 +60,13 @@ function ChartTooltip({
 export function ChartsSection({ results }: { results: AuditResults }) {
   const spendData = results.perTool
     .filter((t) => t.currentMonthlySpendUsd > 0)
-    .map((t) => ({
-      name: t.toolId,
+    .map((t, i) => ({
+      name: `${t.toolId} ${i > 0 ? `(${i})` : ''}`.trim(),
       value: t.currentMonthlySpendUsd,
     }))
 
-  const compareData = results.perTool.slice(0, 8).map((t) => ({
-    name: t.toolId,
+  const compareData = results.perTool.slice(0, 8).map((t, i) => ({
+    name: `${t.toolId} ${i > 0 ? `(${i})` : ''}`.trim(),
     Current: t.currentMonthlySpendUsd,
     Recommended: t.recommendedMonthlySpendUsd,
   }))
@@ -83,20 +83,20 @@ export function ChartsSection({ results }: { results: AuditResults }) {
   ]
 
   return (
-    <section id="spend" className="scroll-mt-24">
-      <div className="mb-4 flex items-end justify-between gap-3">
+    <section id="spend" className="mt-8 scroll-mt-24">
+      <div className="mb-6 flex items-end justify-between gap-3">
         <div>
-          <div className="text-sm font-semibold">Charts</div>
-          <div className="text-sm text-muted-foreground">
-            Spending breakdown, projected savings, and yearly comparison.
+          <div className="text-lg font-bold tracking-tight">Charts</div>
+          <div className="text-sm text-muted-foreground mt-1">
+            Spending breakdown and current vs recommended spend.
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="shadow-subtle">
+      <div className="grid gap-5 lg:grid-cols-2">
+        <Card className="shadow-sm border-primary/5 hover:border-primary/20 transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-base">Spending breakdown</CardTitle>
+            <CardTitle className="text-base font-semibold">Spending breakdown</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[260px]">
@@ -107,9 +107,9 @@ export function ChartsSection({ results }: { results: AuditResults }) {
                     data={spendData}
                     dataKey="value"
                     nameKey="name"
-                    innerRadius="55%"
-                    outerRadius="85%"
-                    paddingAngle={2}
+                    innerRadius="60%"
+                    outerRadius="80%"
+                    paddingAngle={3}
                   >
                     {spendData.map((_, i) => (
                       <Cell key={i} fill={palette[i % palette.length]} />
@@ -118,113 +118,40 @@ export function ChartsSection({ results }: { results: AuditResults }) {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-3 text-xs text-muted-foreground">
-              Pie chart shows current monthly spend by tool.
+            <div className="mt-4 text-sm text-muted-foreground text-center">
+              Current monthly spend by tool.
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-subtle">
+        <Card className="shadow-sm border-primary/5 hover:border-primary/20 transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-base">Projected monthly spend</CardTitle>
+            <CardTitle className="text-base font-semibold">Current vs Recommended</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[260px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={yearly} margin={{ left: 8, right: 8 }}>
-                  <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                  <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                <BarChart data={compareData} margin={{ left: 0, right: 0 }}>
+                  <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="4 4" vertical={false} />
+                  <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} dy={10} />
                   <YAxis
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(v) => `$${v}`}
-                    width={44}
+                    width={40}
+                    tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                   />
-                  <Tooltip content={<ChartTooltip />} />
-                  <Line
-                    type="monotone"
-                    dataKey="Current"
-                    stroke={palette[0]}
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="Recommended"
-                    stroke={palette[2]}
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Legend />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="mt-3 text-xs text-muted-foreground">
-              A simple projection showing current vs recommended monthly spend.
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-subtle lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base">Current vs recommended by tool</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={compareData} margin={{ left: 8, right: 8 }}>
-                  <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                  <XAxis dataKey="name" tickLine={false} axisLine={false} />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(v) => `$${v}`}
-                    width={44}
-                  />
-                  <Tooltip content={<ChartTooltip />} />
-                  <Legend />
-                  <Bar dataKey="Current" fill={palette[0]} radius={[8, 8, 0, 0]} />
+                  <Tooltip content={<ChartTooltip />} cursor={{ fill: 'hsl(var(--muted)/0.4)' }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 10 }} />
+                  <Bar dataKey="Current" fill={palette[0]} radius={[4, 4, 0, 0]} maxBarSize={40} />
                   <Bar
                     dataKey="Recommended"
-                    fill={palette[2]}
-                    radius={[8, 8, 0, 0]}
+                    fill={palette[3]}
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={40}
                   />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-subtle lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base">Yearly comparison</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 lg:grid-cols-[1fr_280px] lg:items-center">
-              <div className="h-[220px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={annualComparison} margin={{ left: 8, right: 8 }}>
-                    <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="4 4" />
-                    <XAxis dataKey="name" tickLine={false} axisLine={false} />
-                    <YAxis tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
-                    <Tooltip content={<ChartTooltip />} />
-                    <Bar dataKey="value" fill={palette[1]} radius={[10, 10, 0, 0]}>
-                      {annualComparison.map((_, i) => (
-                        <Cell key={i} fill={palette[i % palette.length]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="rounded-2xl border bg-muted/30 p-4 text-sm text-muted-foreground">
-                <div className="text-xs">Estimated annual savings</div>
-                <div className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
-                  {formatUsd(results.totalAnnualSavingsUsd)}
-                </div>
-                <div className="mt-2 text-xs">
-                  Based on current inputs and mock optimization rules.
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>
