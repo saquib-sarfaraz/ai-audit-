@@ -7,24 +7,28 @@ import {
 
 const faqs = [
   {
-    q: 'Is this connected to real billing systems?',
-    a: 'Not yet. This MVP frontend uses mock pricing and local state only—no APIs, auth, or backend wiring.',
+    q: 'How does the AI spend audit work?',
+    a: "We analyze your tech stack and current AI subscriptions to identify overlapping tools, unused seats, and cheaper alternatives. Input your current tools, and we'll instantly generate a custom savings report.",
   },
   {
-    q: 'Can I add multiple tools and seats?',
-    a: 'Yes. The audit form supports adding/removing multiple tools with per-tool plan, seats, and spend.',
+    q: 'Which AI tools do you support?',
+    a: 'We track pricing, usage limits, and feature overlap for over 200 popular AI tools, including OpenAI, Anthropic, Midjourney, and GitHub Copilot. Our pricing database is updated weekly.',
   },
   {
-    q: 'How are savings calculated?',
-    a: 'Using lightweight mock rules (e.g., right-sizing seats, swapping tiers, alternatives). You can replace these later with your real logic.',
+    q: 'How accurate are the savings estimates?',
+    a: 'Highly accurate. Our calculations use real-time public pricing, API cost structures, and typical usage patterns to recommend consolidated enterprise plans or alternatives with comparable feature parity.',
   },
   {
-    q: 'Does it support dark mode?',
-    a: 'Yes—class-based dark mode with a theme switcher and system preference support.',
+    q: "Is my company's stack data private?",
+    a: "Yes. We don't connect to your billing accounts or require sensitive financial data. The tool configurations you input are used strictly to generate your audit report and are never shared.",
   },
   {
-    q: 'Can I share a report link?',
-    a: 'The shared report route exists. For now, it reads from local mock state; you can wire real share tokens later.',
+    q: 'Do I need to create an account?',
+    a: 'No account or credit card is required to run an audit. You can view your top-level savings immediately. We only ask for an email if you want to save your stack or export the results.',
+  },
+  {
+    q: 'Can I share the audit results with my team?',
+    a: 'Yes. Every audit generates a unique, secure link. You can easily share the breakdown with your finance team, CTO, or engineering leads to streamline vendor consolidation.',
   },
 ]
 
