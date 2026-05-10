@@ -2,7 +2,7 @@ import { AlertTriangle, CheckCircle2, Gauge, Layers3 } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
 import type { AuditResults } from '@/types/results'
-import { formatUsd } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 
 function countByType(results: AuditResults) {
   const counts = new Map<string, number>()
@@ -66,7 +66,7 @@ export function InsightsSection({ results }: { results: AuditResults }) {
           </div>
           <div className="mt-3 text-sm text-muted-foreground">
             Risk: <span className="font-medium text-foreground">{risk}</span> •
-            Current: <span className="font-medium text-foreground">{formatUsd(results.totalCurrentMonthlyUsd)}/mo</span>
+            Current: <span className="font-medium text-foreground">{formatCurrency(results.totalCurrentMonthlyUsd)}/mo</span>
           </div>
         </Card>
       </div>

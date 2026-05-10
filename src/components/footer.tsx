@@ -9,10 +9,6 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           <div className="space-y-2">
             <div className="text-sm font-semibold">AI Spend Audit</div>
-            <p className="text-sm text-muted-foreground">
-              A polished frontend MVP for auditing AI subscriptions and finding
-              savings.
-            </p>
           </div>
 
           <div className="space-y-2">
@@ -30,12 +26,12 @@ export function Footer() {
           <div className="space-y-2">
             <div className="text-sm font-semibold">Company</div>
             <div className="grid gap-1 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-foreground">
+              <Link to="/privacy" className="hover:text-foreground">
                 Privacy
-              </a>
-              <a href="#" className="hover:text-foreground">
+              </Link>
+              <Link to="/terms" className="hover:text-foreground">
                 Terms
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -51,7 +47,6 @@ export function Footer() {
 
         <div className="flex flex-col justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
           <div>© {new Date().getFullYear()} AI Spend Audit</div>
-          <div>Built with React • Vite • Tailwind • shadcn/ui</div>
         </div>
       </div>
     </footer>

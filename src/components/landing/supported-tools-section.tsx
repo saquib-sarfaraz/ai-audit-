@@ -19,6 +19,7 @@ export function SupportedToolsSection() {
           <ToolCard
             key={t.id}
             tool={{
+              id: t.id,
               name: t.name,
               description: t.description,
               badge: t.badge,

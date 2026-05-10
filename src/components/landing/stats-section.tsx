@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/card'
+import { formatCurrency } from '@/utils/format'
 
 const stats = [
   { label: 'Median savings', value: '18–32%' },
@@ -14,10 +15,7 @@ export function StatsSection() {
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Savings you can forecast
         </h2>
-        <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-          Get clean monthly and annual estimates, plus a breakdown of where the
-          wins come from.
-        </p>
+
       </div>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -43,11 +41,11 @@ export function StatsSection() {
           <div className="grid grid-cols-3 gap-3">
             <div className="rounded-2xl border bg-background/60 p-4">
               <div className="text-xs text-muted-foreground">Monthly</div>
-              <div className="mt-1 text-lg font-semibold">$1,240</div>
+              <div className="mt-1 text-lg font-semibold">{formatCurrency(1240)}</div>
             </div>
             <div className="rounded-2xl border bg-background/60 p-4">
               <div className="text-xs text-muted-foreground">Annual</div>
-              <div className="mt-1 text-lg font-semibold">$14,880</div>
+              <div className="mt-1 text-lg font-semibold">{formatCurrency(14880)}</div>
             </div>
             <div className="rounded-2xl border bg-background/60 p-4">
               <div className="text-xs text-muted-foreground">Tools</div>

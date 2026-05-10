@@ -46,10 +46,7 @@ export function PricingSection() {
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Choose your audit depth
         </h2>
-        <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-          This MVP focuses on a clean UI flow. Replace mock logic with your real
-          rules when you’re ready.
-        </p>
+
       </div>
 
       <div className="mt-10 grid gap-4 lg:grid-cols-3">

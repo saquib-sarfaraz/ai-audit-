@@ -19,18 +19,35 @@ export function ReportPage() {
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState('')
   const [summary, setSummary] = React.useState('')
+  const didLoad = React.useRef(false)
 
   React.useEffect(() => {
+    if (didLoad.current) return
+    didLoad.current = true
+    
     async function load() {
       if (!id) return
       try {
         setLoading(true)
-        // trigger summary generation concurrently
-        generateAiSummary(id).catch(console.error)
+        // Note: AI Summary is now generated synchronously before navigation in audit-form.tsx
         
         const res = await getReport(id)
         if (res.success) {
           const d = res.data
+          
+          // If summary is null, attempt to trigger generation one more time synchronously
+          let currentSummary = d.summary
+          if (!currentSummary) {
+             try {
+               const sumRes = await generateAiSummary(id)
+               if (sumRes.success && sumRes.data.summary) {
+                 currentSummary = sumRes.data.summary
+               }
+             } catch (e) {
+               console.warn("Secondary summary attempt failed:", e)
+             }
+          }
+
           const mapped: AuditResults = {
             id: d.reportId,
             generatedAtIso: d.createdAt || new Date().toISOString(),
@@ -39,11 +56,11 @@ export function ReportPage() {
             totalAnnualSavingsUsd: d.annualSavings,
             totalRecommendedMonthlyUsd: d.monthlySpend - d.monthlySavings,
             perTool: (d.tools || []).map((t: any) => ({
-              toolId: t.name.toLowerCase().replace(/\s+/g, '_'),
-              currentMonthlySpendUsd: t.monthlySpend,
-              recommendedMonthlySpendUsd: t.monthlySpend, // Approximate without specific tool savings
-              monthlySavingsUsd: 0,
-              notes: []
+              toolId: t.toolId || (t.name ? t.name.toLowerCase().replace(/\s+/g, '_') : 'unknown'),
+              currentMonthlySpendUsd: t.currentMonthlySpendUsd || t.monthlySpend || 0,
+              recommendedMonthlySpendUsd: t.recommendedMonthlySpendUsd || t.monthlySpend || 0,
+              monthlySavingsUsd: t.monthlySavingsUsd || 0,
+              notes: t.notes || []
             })),
             recommendations: (d.recommendations || []).map((r: any, i: number) => ({
               id: `rec-${i}`,
@@ -56,7 +73,7 @@ export function ReportPage() {
             }))
           }
           setResults(mapped)
-          setSummary(d.summary || '')
+          setSummary(currentSummary || '')
         }
       } catch (err) {
         setError('Failed to load report')
@@ -115,12 +132,12 @@ export function ReportPage() {
         </div>
       </div>
 
-      {summary && (
-        <Card className="p-6 bg-primary/5 border-primary/20">
-          <h3 className="font-semibold mb-2">AI Summary</h3>
-          <p className="text-sm text-muted-foreground">{summary}</p>
-        </Card>
-      )}
+      <Card className="p-6 bg-indigo-500/5 border-indigo-500/10">
+        <h3 className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-3">AI Executive Assessment</h3>
+        <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
+          {summary || 'AI-generated summary assessment unavailable.'}
+        </p>
+      </Card>
 
       <SummaryCards results={results} />
       <ToolBreakdown results={results} />

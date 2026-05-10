@@ -56,10 +56,7 @@ export function FeaturesSection() {
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             A dashboard your finance team will actually open
           </h2>
-          <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-            Inspired by modern SaaS products—clean typography, subtle motion, and
-            accessible UI patterns.
-          </p>
+
         </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

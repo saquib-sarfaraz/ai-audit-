@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import type { Recommendation } from '@/types/results'
-import { formatUsd } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 
 const typeMeta: Record<
   Recommendation['type'],
@@ -63,7 +63,7 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
         <div className="shrink-0 text-right ml-4">
           <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Est. savings</div>
           <div className="mt-1 text-2xl font-bold tracking-tight text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-            {formatUsd(rec.estimatedMonthlySavingsUsd)}
+            {formatCurrency(rec.estimatedMonthlySavingsUsd)}
             <span className="ml-1 text-sm font-normal opacity-80">/mo</span>
           </div>
         </div>

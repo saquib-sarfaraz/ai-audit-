@@ -1,31 +1,60 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-export async function generateAuditReport(data: any) {
-  const res = await fetch(`${API_BASE_URL}/audit`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) {
-    throw new Error('Failed to generate audit report')
+async function fetchWithRetry(url: string, options: RequestInit = {}) {
+  try {
+    const res = await fetch(url, options)
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null)
+      throw new Error(errorData?.message || `Request failed with status ${res.status}`)
+    }
+    return res.json()
+  } catch (err: any) {
+    if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+      throw new Error('Unable to connect to backend server. Please check your connection.')
+    }
+    throw err
   }
-  return res.json()
+}
+
+export interface ToolPayload {
+  toolId: string
+  planId: string
+  monthlySpendUsd: number
+  seats: number
+}
+
+export interface AuditRequest {
+  teamSize: number
+  primaryUseCase: string
+  tools: ToolPayload[]
+}
+
+export async function generateAuditReport(data: AuditRequest) {
+  console.log('Audit payload:', data)
+  try {
+    return await fetchWithRetry(`${API_BASE_URL}/audit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+  } catch (err: any) {
+    if (err.message && err.message.includes('required')) {
+      throw new Error('Please complete all required tool fields.')
+    }
+    throw new Error(err.message === 'Unable to connect to backend server. Please check your connection.' ? err.message : (err.message || 'Audit generation failed. Please try again.'))
+  }
 }
 
 export async function generateAiSummary(reportId: string) {
-  const res = await fetch(`${API_BASE_URL}/summary`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ reportId }),
-  })
-  if (!res.ok) {
-    throw new Error('Failed to generate summary')
+  try {
+    return await fetchWithRetry(`${API_BASE_URL}/summary`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reportId }),
+    })
+  } catch (err: any) {
+    throw new Error('Failed to generate AI summary.')
   }
-  return res.json()
 }
 
 export async function captureLead(data: {
@@ -35,23 +64,21 @@ export async function captureLead(data: {
   teamSize: number
   reportId: string
 }) {
-  const res = await fetch(`${API_BASE_URL}/lead`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) {
-    throw new Error('Failed to capture lead')
+  try {
+    return await fetchWithRetry(`${API_BASE_URL}/lead`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+  } catch (err: any) {
+    throw new Error('Failed to capture lead details.')
   }
-  return res.json()
 }
 
 export async function getReport(reportId: string) {
-  const res = await fetch(`${API_BASE_URL}/report/${reportId}`)
-  if (!res.ok) {
-    throw new Error('Failed to get report')
+  try {
+    return await fetchWithRetry(`${API_BASE_URL}/report/${reportId}`)
+  } catch (err: any) {
+    throw new Error('Failed to retrieve the requested report.')
   }
-  return res.json()
 }

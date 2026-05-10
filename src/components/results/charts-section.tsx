@@ -22,7 +22,7 @@ import type {
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { AuditResults } from '@/types/results'
-import { formatUsd } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 
 const palette = [
   '#6366F1', // indigo
@@ -49,7 +49,7 @@ function ChartTooltip({
         {payload.map((p) => (
           <div key={String(p.dataKey)} className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground">{String(p.name ?? p.dataKey)}</span>
-            <span className="font-medium">{formatUsd(Number(p.value) || 0)}</span>
+            <span className="font-medium">{formatCurrency(Number(p.value) || 0)}</span>
           </div>
         ))}
       </div>
@@ -137,7 +137,7 @@ export function ChartsSection({ results }: { results: AuditResults }) {
                   <YAxis
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(v) => `$${v}`}
+                    tickFormatter={(v) => formatCurrency(v, true)}
                     width={40}
                     tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                   />

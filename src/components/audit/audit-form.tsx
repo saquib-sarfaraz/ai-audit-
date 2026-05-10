@@ -21,7 +21,7 @@ import {
   type AuditFormValues,
 } from '@/lib/validation/audit'
 import { runMockAudit } from '@/utils/mock-audit'
-import { formatUsd } from '@/utils/format'
+import { formatCurrency, formatInr, USD_TO_INR_RATE } from '@/utils/format'
 
 const useCaseLabels: Record<(typeof primaryUseCases)[number], string> = {
   coding: 'Coding / IDE',
@@ -86,38 +86,42 @@ export function AuditForm() {
   const removeTool = (index: number) => toolsArray.remove(index)
 
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [submitError, setSubmitError] = React.useState<string | null>(null)
 
   const onSubmit = async (data: AuditFormInput) => {
     try {
       setIsSubmitting(true)
-      const mappedTools = data.tools.map((t) => {
-        const tool = toolById.get(t.toolId as any)
-        const plan = tool?.plans.find((p) => p.id === t.planId)
-        return {
-          name: tool?.name || t.toolId,
-          plan: plan?.name || t.planId,
-          monthlySpend: Number(t.monthlySpendUsd) || 0,
-          seats: Number(t.seats) || 1,
-        }
-      })
+      setSubmitError(null)
+      const mappedTools = data.tools.map((t) => ({
+        toolId: String(t.toolId),
+        planId: String(t.planId),
+        monthlySpendUsd: (Number(t.monthlySpendUsd) || 0) / USD_TO_INR_RATE,
+        seats: Number(t.seats) || 1,
+      }))
 
       const payload = {
-        teamSize: Number(data.teamSize),
+        teamSize: Number(data.teamSize) || 1,
         primaryUseCase: data.primaryUseCase,
         tools: mappedTools,
       }
 
-      const { generateAuditReport } = await import('@/lib/api')
+      const { generateAuditReport, generateAiSummary } = await import('@/lib/api')
       const response = await generateAuditReport(payload)
       
       if (response.success && response.data.reportId) {
+        // Generate AI summary
+        try {
+          await generateAiSummary(response.data.reportId)
+        } catch (e) {
+          console.error("Summary generation failed:", e)
+        }
         navigate(`/report/${response.data.reportId}`)
       } else {
-        throw new Error('Invalid response from server')
+        throw new Error(response.message || 'Invalid response from server')
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      alert('Failed to generate audit report.')
+      setSubmitError(err.message || 'Failed to generate audit report.')
     } finally {
       setIsSubmitting(false)
     }
@@ -138,6 +142,11 @@ export function AuditForm() {
           </p>
         </CardHeader>
         <CardContent className="grid gap-8">
+          {submitError && (
+            <div className="rounded-md bg-destructive/15 p-4 text-sm text-destructive">
+              {submitError}
+            </div>
+          )}
           <div className="grid gap-4 md:grid-cols-2">
             <Controller
               name="teamSize"
@@ -312,7 +321,7 @@ export function AuditForm() {
                           control={form.control}
                           render={({ field, fieldState }) => (
                             <Field>
-                              <FieldLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Spend ($)</FieldLabel>
+                              <FieldLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Spend (INR)</FieldLabel>
                               <Input
                                 type="number"
                                 inputMode="decimal"
@@ -415,7 +424,7 @@ export function AuditForm() {
             <div className="rounded-xl border border-primary/10 bg-background/50 p-5 shadow-sm backdrop-blur-sm">
               <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total estimated spend</div>
               <div className="mt-2 text-3xl font-bold tracking-tight text-foreground">
-                {formatUsd(totalMonthly)}
+                {formatInr(totalMonthly)}
               </div>
             </div>
             <div className="grid gap-3 text-sm text-muted-foreground">

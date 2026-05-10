@@ -3,7 +3,7 @@ import { ArrowDown, ArrowRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import type { AuditResults } from '@/types/results'
-import { formatUsd } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 
 export function ToolBreakdown({ results }: { results: AuditResults }) {
   const items = results.perTool
@@ -59,7 +59,7 @@ export function ToolBreakdown({ results }: { results: AuditResults }) {
                 <div className="shrink-0 text-right">
                   <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Savings</div>
                   <div className="mt-1 text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400 group-hover:scale-105 transition-transform origin-right">
-                    {formatUsd(t.monthlySavingsUsd)}
+                    {formatCurrency(t.monthlySavingsUsd)}
                     <span className="ml-1 text-sm font-normal opacity-80">
                       /mo
                     </span>
@@ -71,7 +71,7 @@ export function ToolBreakdown({ results }: { results: AuditResults }) {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Current</span>
                   <span className="font-semibold text-foreground">
-                    {formatUsd(t.currentMonthlySpendUsd)}
+                    {formatCurrency(t.currentMonthlySpendUsd)}
                   </span>
                 </div>
                 <div className="h-2.5 overflow-hidden rounded-full bg-muted/50 border border-primary/5">
@@ -100,7 +100,7 @@ export function ToolBreakdown({ results }: { results: AuditResults }) {
                     Recommended <ArrowRight className="h-3.5 w-3.5" />
                   </span>
                   <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                    {formatUsd(t.recommendedMonthlySpendUsd)}
+                    {formatCurrency(t.recommendedMonthlySpendUsd)}
                   </span>
                 </div>
               </div>

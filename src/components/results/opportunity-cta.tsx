@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import type { AuditResults } from '@/types/results'
-import { formatUsd } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 
 export function OpportunityCta({ results }: { results: AuditResults }) {
   const pct =
@@ -54,7 +54,7 @@ export function OpportunityCta({ results }: { results: AuditResults }) {
             <div className="mt-1 text-sm text-muted-foreground">
               Estimated{' '}
               <span className="font-medium text-foreground">
-                {formatUsd(results.totalMonthlySavingsUsd)}/mo
+                {formatCurrency(results.totalMonthlySavingsUsd)}/mo
               </span>{' '}
               in savings. Share this report with your team and execute the top
               recommendations.

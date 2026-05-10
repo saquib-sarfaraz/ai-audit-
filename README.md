@@ -1,17 +1,38 @@
-# React + Vite
+# AI Spend Audit
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AI Spend Audit is a modern SaaS application that helps teams identify overlapping AI subscriptions, optimize seats, and uncover savings through actionable AI-driven insights.
 
-Currently, two official plugins are available:
+## Frontend Features
+- **Responsive SaaS Dashboard:** A sleek, mobile-ready dashboard built with Tailwind CSS.
+- **AI Audit Workflow:** A seamless form flow for teams to declare their AI tools, seats, and current spend.
+- **Dynamic Report Pages:** Shareable report URLs detailing actionable cost-saving insights.
+- **Charts and Analytics UI:** Visual breakdowns of current vs. optimized spend using modern charting libraries.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Setup Instructions
+```bash
+# Install dependencies
+npm install
 
-## Expanding the ESLint configuration
+# Run the development server
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# ai-audit-
+## Environment Variables
+Create a `.env` file at the root:
+```env
+VITE_API_BASE_URL=http://localhost:5001/api
+```
+
+## Route Overview
+- `/` - Landing page with marketing copy.
+- `/audit` - The main audit configuration form.
+- `/report/:id` - Read-only shareable report view.
+- `/results` - Interactive dashboard and savings breakdown.
+
+## Deployment Steps
+1. Push to GitHub.
+2. Import project in Vercel.
+3. Configure `VITE_API_BASE_URL` in Vercel Environment Variables.
+4. Deploy.

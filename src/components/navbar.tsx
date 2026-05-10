@@ -38,8 +38,8 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="left" className="w-80 sm:w-96">
               <div className="mb-6 flex items-center gap-2">
-                <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-semibold text-white shadow-subtle">
-                  AI
+                <div className="h-20 w-20 overflow-hidden rounded-xl shadow-sm border border-border bg-white p-1.5 flex items-center justify-center">
+                  <img src="/brand-logo.png" alt="Logo" className="h-full w-full object-contain" />
                 </div>
                 <div>
                   <SheetTitle className="text-sm font-semibold tracking-tight">
@@ -80,15 +80,12 @@ export function Navbar() {
           </Sheet>
 
           <Link to="/" className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-semibold text-white shadow-subtle">
-              AI
+            <div className="h-12 w-12 overflow-hidden rounded-xl shadow-sm border border-border bg-white p-1.5 flex items-center justify-center">
+              <img src="/brand-logo.png" alt="Logo" className="h-full w-full object-contain" />
             </div>
             <div className="leading-tight">
               <div className="text-sm font-semibold tracking-tight">
                 Spend Audit
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Cut AI SaaS costs
               </div>
             </div>
           </Link>

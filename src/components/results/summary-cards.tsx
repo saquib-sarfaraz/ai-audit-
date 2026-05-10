@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import type { AuditResults } from '@/types/results'
-import { formatUsd } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 
 export function SummaryCards({ results }: { results: AuditResults }) {
   const savingsPct =
@@ -24,7 +24,7 @@ export function SummaryCards({ results }: { results: AuditResults }) {
             <div>
               <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Estimated savings</div>
               <div className="mt-2 text-4xl font-bold tracking-tight text-foreground">
-                {formatUsd(results.totalMonthlySavingsUsd)}
+                {formatCurrency(results.totalMonthlySavingsUsd)}
                 <span className="ml-1 text-lg font-normal text-muted-foreground">
                   /mo savings
                 </span>
@@ -49,7 +49,7 @@ export function SummaryCards({ results }: { results: AuditResults }) {
             <div className="rounded-xl border bg-background/50 p-4 shadow-sm backdrop-blur-sm">
               <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Current spend</div>
               <div className="mt-2 text-xl font-semibold text-foreground">
-                {formatUsd(results.totalCurrentMonthlyUsd)}
+                {formatCurrency(results.totalCurrentMonthlyUsd)}
                 <span className="ml-1 text-sm font-normal text-muted-foreground">
                   /mo
                 </span>
@@ -58,7 +58,7 @@ export function SummaryCards({ results }: { results: AuditResults }) {
             <div className="rounded-xl border bg-background/50 p-4 shadow-sm backdrop-blur-sm border-emerald-500/20">
               <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Recommended</div>
               <div className="mt-2 text-xl font-semibold text-emerald-600 dark:text-emerald-400">
-                {formatUsd(results.totalRecommendedMonthlyUsd)}
+                {formatCurrency(results.totalRecommendedMonthlyUsd)}
                 <span className="ml-1 text-sm font-normal opacity-80">
                   /mo
                 </span>

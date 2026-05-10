@@ -5,6 +5,8 @@ import { DashboardLayout } from '@/layouts/dashboard-layout'
 import { MarketingLayout } from '@/layouts/marketing-layout'
 import { AuditPage } from '@/pages/audit'
 import { LandingPage } from '@/pages/landing'
+import { PrivacyPage } from '@/pages/privacy'
+import { TermsPage } from '@/pages/terms'
 import { ReportPage } from '@/pages/report'
 import { ResultsPage } from '@/pages/results'
 
@@ -14,6 +16,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <LandingPage /> },
       { path: 'audit', element: <AuditPage /> },
+      { path: 'privacy', element: <PrivacyPage /> },
+      { path: 'terms', element: <TermsPage /> },
     ],
   },
   {
